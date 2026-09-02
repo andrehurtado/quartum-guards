@@ -1,0 +1,26 @@
+{
+  "_comment": [
+    "Reference standard for target verdicts. Every consuming repository has its own small",
+    "implementation of the refusal rule; each proves itself against THESE vectors.",
+    "Independent implementations agreeing on a published reference set is a stronger",
+    "property than identical copies of one file, and it is the argument this platform",
+    "already makes for its shared scoring engine.",
+    "",
+    "Every credential below is FABRICATED. The JWTs are unsigned, carry only a `ref`",
+    "claim, and authenticate nothing. No real key, token or environment file may ever",
+    "enter this repository."
+  ],
+  "stagingAllowlist": ["stagingaaaaaaaaaaaaa", "stagingbbbbbbbbbbbbb"],
+  "cases": [
+    { "name": "fabricated Staging-A target",       "env": { "STAGING_A_PROJECT_ID": "stagingaaaaaaaaaaaaa" }, "permitted": true },
+    { "name": "fabricated Staging-B target",       "env": { "STAGING_B_PROJECT_ID": "stagingbbbbbbbbbbbbb" }, "permitted": true },
+    { "name": "Production Project A by id",        "env": { "SUPABASE_PROJECT_ID": "mnvviyiqawwtnwewzmwf" }, "permitted": false },
+    { "name": "Production Project A hidden in a URL", "env": { "SUPABASE_URL": "https://mnvviyiqawwtnwewzmwf.supabase.co" }, "permitted": false },
+    { "name": "Production Project B-new by id",    "env": { "SUPABASE_PROJECT_ID": "zdqodrkekwkfuqrlfxmq" }, "permitted": false },
+    { "name": "Production Project B-new inside the JWT credential", "env": { "SB_SERVICE_ROLE_SECRET_KEY": "@@JWT:zdqodrkekwkfuqrlfxmq@@" }, "permitted": false },
+    { "name": "retired cold-archive project",      "env": { "SUPABASE_PROJECT_ID": "sfuxmkxqwuvfbwcfdxrl" }, "permitted": false },
+    { "name": "unknown project not on the allowlist", "env": { "SUPABASE_PROJECT_ID": "unknownaaaaaaaaaaaaa" }, "permitted": false },
+    { "name": "no target configured at all",       "env": {}, "permitted": false },
+    { "name": "staging id paired with a production URL", "env": { "STAGING_A_PROJECT_ID": "stagingaaaaaaaaaaaaa", "SUPABASE_URL": "https://zdqodrkekwkfuqrlfxmq.supabase.co" }, "permitted": false }
+  ]
+}

@@ -1,0 +1,36 @@
+name: "Quartum guards"
+description: "Production-target interlock and credential scan for Quartum repositories."
+inputs:
+  scan-root:
+    description: "Directory to scan for credential material."
+    required: false
+    default: "."
+  staging-allow:
+    description: "Comma-separated Supabase project refs permitted as staging targets. Empty means nothing is permitted."
+    required: false
+    default: ""
+  enforce-target:
+    description: "Run the production-target interlock against the job environment. Set true only in credentialled jobs."
+    required: false
+    default: "false"
+runs:
+  using: "composite"
+  steps:
+    - name: Interlock replays its published vectors (positive + negative controls)
+      shell: bash
+      run: node "${{ github.action_path }}/src/assert-not-production.mjs" --self-test
+
+    - name: Scanner proves it can fire (positive control, fabricated secrets)
+      shell: bash
+      run: node "${{ github.action_path }}/src/secret-scan.mjs" --self-test
+
+    - name: Consuming repository carries no credential material
+      shell: bash
+      run: node "${{ github.action_path }}/src/secret-scan.mjs" "${{ inputs.scan-root }}"
+
+    - name: Credentialled job targets a permitted project
+      if: inputs.enforce-target == 'true'
+      shell: bash
+      env:
+        QUARTUM_STAGING_ALLOW: ${{ inputs.staging-allow }}
+      run: node "${{ github.action_path }}/src/assert-not-production.mjs"

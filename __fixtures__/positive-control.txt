@@ -1,0 +1,13 @@
+# POSITIVE CONTROL for the credential scanner. Every value here is FABRICATED.
+# The scanner must report EXACTLY 4 hits against this file. "0 hits" and
+# "0 files scanned" are otherwise indistinguishable, which is how a scanner
+# becomes an assay that reports clean because no sample was loaded.
+#
+# 1. sb_secret_ shaped value
+sb_secret_AAAAAAAAAAAAAAAAAAAA
+# 2. a credential NAME with an assigned value
+ATLAS_IMPORT_SECRET=AAAAAAAAAAAAAAAAAAAA
+# 3. an unsigned JWT whose payload is {"ref":"fabricatedaaaaaaaaa","role":"service_role"}
+eyJhbGciOiJIUzI1NiJ9.eyJyZWYiOiJmYWJyaWNhdGVkYWFhYWFhYWFhIiwicm9sZSI6InNlcnZpY2Vfcm9sZSJ9.not-a-real-signature
+# 4. a private key header
+-----BEGIN RSA PRIVATE KEY-----
