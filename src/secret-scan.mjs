@@ -90,6 +90,14 @@ function candidateFiles(root) {
  * broad — it silently exempts the largest surface in the repository. Instead a consuming
  * repo may ship `.quartum-secret-scan-allow`, one `path # reason` per line. A reason is
  * mandatory, and unused entries are reported so a stale exemption cannot linger unnoticed.
+ *
+ * REASON TEXT MUST DESCRIBE MATCHED VALUES, NEVER REPRODUCE THEM.
+ *
+ * The allowlist file is itself scanned, deliberately: it is the file most likely to
+ * accumulate copy-pasted credential material over time, and exempting it would make the
+ * exemption register the one blind spot in the repository. The consequence is that a
+ * reason quoting the placeholder it describes makes the documentation trip the scanner.
+ * That is not a flaw to route around — say "a fabricated opaque-prefixed key", not the key.
  */
 export function readAllowlist(root) {
   const p = join(root, ".quartum-secret-scan-allow");
