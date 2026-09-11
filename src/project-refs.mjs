@@ -24,18 +24,39 @@ export const RETIRED_REFS = Object.freeze({
   ojrqbrwlldtgyaxxxils: "retired Lovable Cloud project",
 });
 
+/*
+  The `VITE_QUARTUM_DEMO_*` names are Learning's isolated-demo backend (N1-D2).
+
+  They are here because they SELECT A PROJECT exactly as the older names do --
+  the demo deployment resolves its Supabase client from them. A name list only
+  ever finds the variables somebody remembered, and these were the ones nobody
+  had: before this, an env file pointing `VITE_QUARTUM_DEMO_SUPABASE_URL` at a
+  production or retired ref was invisible to the interlock.
+
+  `VITE_` here is not a contradiction. The prefix means "reaches the browser
+  bundle", which a project URL, ref and publishable key legitimately do. No
+  secret name may ever join this file.
+*/
 export const REF_VARS = Object.freeze([
   "SUPABASE_PROJECT_ID", "VITE_SUPABASE_PROJECT_ID",
   "STAGING_A_PROJECT_ID", "STAGING_B_PROJECT_ID", "QUARTUM_DEMO_SUPABASE_PROJECT_ID",
+  "VITE_QUARTUM_DEMO_SUPABASE_PROJECT_ID",
 ]);
 export const URL_VARS = Object.freeze([
   "SUPABASE_URL", "VITE_SUPABASE_URL",
   "STAGING_A_URL", "STAGING_B_URL", "ATLAS_REGISTRY_URL",
+  "VITE_QUARTUM_DEMO_SUPABASE_URL",
 ]);
 export const JWT_VARS = Object.freeze([
   "SB_SERVICE_ROLE_SECRET_KEY", "SUPABASE_SERVICE_ROLE_KEY", "QUARTUM_SUPABASE_SERVICE_ROLE_KEY",
   "STAGING_A_SERVICE_ROLE_KEY", "STAGING_B_SERVICE_ROLE_KEY",
   "SUPABASE_PUBLISHABLE_KEY", "VITE_SUPABASE_PUBLISHABLE_KEY",
+  // A demo publishable key. Supabase's LEGACY format is a JWT and carries an
+  // authoritative `ref`; the modern `sb_publishable_` format carries no claims
+  // at all. `refFromJwt` returns null for it rather than inventing one -- an
+  // opaque key simply is not a ref source, and pretending otherwise would
+  // manufacture a verdict from nothing.
+  "VITE_QUARTUM_DEMO_SUPABASE_PUBLISHABLE_KEY",
 ]);
 
 /** Credential NAMES worth scanning for. Names, never values. */
