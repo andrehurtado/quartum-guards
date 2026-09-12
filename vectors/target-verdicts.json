@@ -10,17 +10,141 @@
     "claim, and authenticate nothing. No real key, token or environment file may ever",
     "enter this repository."
   ],
-  "stagingAllowlist": ["stagingaaaaaaaaaaaaa", "stagingbbbbbbbbbbbbb"],
+  "stagingAllowlist": [
+    "stagingaaaaaaaaaaaaa",
+    "stagingbbbbbbbbbbbbb"
+  ],
   "cases": [
-    { "name": "fabricated Staging-A target",       "env": { "STAGING_A_PROJECT_ID": "stagingaaaaaaaaaaaaa" }, "permitted": true },
-    { "name": "fabricated Staging-B target",       "env": { "STAGING_B_PROJECT_ID": "stagingbbbbbbbbbbbbb" }, "permitted": true },
-    { "name": "Production Project A by id",        "env": { "SUPABASE_PROJECT_ID": "mnvviyiqawwtnwewzmwf" }, "permitted": false },
-    { "name": "Production Project A hidden in a URL", "env": { "SUPABASE_URL": "https://mnvviyiqawwtnwewzmwf.supabase.co" }, "permitted": false },
-    { "name": "Production Project B-new by id",    "env": { "SUPABASE_PROJECT_ID": "zdqodrkekwkfuqrlfxmq" }, "permitted": false },
-    { "name": "Production Project B-new inside the JWT credential", "env": { "SB_SERVICE_ROLE_SECRET_KEY": "@@JWT:zdqodrkekwkfuqrlfxmq@@" }, "permitted": false },
-    { "name": "retired cold-archive project",      "env": { "SUPABASE_PROJECT_ID": "sfuxmkxqwuvfbwcfdxrl" }, "permitted": false },
-    { "name": "unknown project not on the allowlist", "env": { "SUPABASE_PROJECT_ID": "unknownaaaaaaaaaaaaa" }, "permitted": false },
-    { "name": "no target configured at all",       "env": {}, "permitted": false },
-    { "name": "staging id paired with a production URL", "env": { "STAGING_A_PROJECT_ID": "stagingaaaaaaaaaaaaa", "SUPABASE_URL": "https://zdqodrkekwkfuqrlfxmq.supabase.co" }, "permitted": false }
+    {
+      "name": "fabricated Staging-A target",
+      "env": {
+        "STAGING_A_PROJECT_ID": "stagingaaaaaaaaaaaaa"
+      },
+      "permitted": true
+    },
+    {
+      "name": "fabricated Staging-B target",
+      "env": {
+        "STAGING_B_PROJECT_ID": "stagingbbbbbbbbbbbbb"
+      },
+      "permitted": true
+    },
+    {
+      "name": "Production Project A by id",
+      "env": {
+        "SUPABASE_PROJECT_ID": "mnvviyiqawwtnwewzmwf"
+      },
+      "permitted": false
+    },
+    {
+      "name": "Production Project A hidden in a URL",
+      "env": {
+        "SUPABASE_URL": "https://mnvviyiqawwtnwewzmwf.supabase.co"
+      },
+      "permitted": false
+    },
+    {
+      "name": "Production Project B-new by id",
+      "env": {
+        "SUPABASE_PROJECT_ID": "zdqodrkekwkfuqrlfxmq"
+      },
+      "permitted": false
+    },
+    {
+      "name": "Production Project B-new inside the JWT credential",
+      "env": {
+        "SB_SERVICE_ROLE_SECRET_KEY": "@@JWT:zdqodrkekwkfuqrlfxmq@@"
+      },
+      "permitted": false
+    },
+    {
+      "name": "retired cold-archive project",
+      "env": {
+        "SUPABASE_PROJECT_ID": "sfuxmkxqwuvfbwcfdxrl"
+      },
+      "permitted": false
+    },
+    {
+      "name": "unknown project not on the allowlist",
+      "env": {
+        "SUPABASE_PROJECT_ID": "unknownaaaaaaaaaaaaa"
+      },
+      "permitted": false
+    },
+    {
+      "name": "no target configured at all",
+      "env": {},
+      "permitted": false
+    },
+    {
+      "name": "staging id paired with a production URL",
+      "env": {
+        "STAGING_A_PROJECT_ID": "stagingaaaaaaaaaaaaa",
+        "SUPABASE_URL": "https://zdqodrkekwkfuqrlfxmq.supabase.co"
+      },
+      "permitted": false
+    },
+    {
+      "name": "N1-D2 demo project-id variable carrying a production ref",
+      "env": {
+        "STAGING_A_PROJECT_ID": "stagingaaaaaaaaaaaaa",
+        "VITE_QUARTUM_DEMO_SUPABASE_PROJECT_ID": "zdqodrkekwkfuqrlfxmq"
+      },
+      "permitted": false,
+      "_note": "Paired with an allowlisted target ON PURPOSE. Without it the run would be refused for 'nothing configured' even if the demo variable were never read, so the vector would pass vacuously. With it, the refusal can only come from reading the demo variable."
+    },
+    {
+      "name": "N1-D2 demo URL variable carrying a production ref",
+      "env": {
+        "STAGING_A_PROJECT_ID": "stagingaaaaaaaaaaaaa",
+        "VITE_QUARTUM_DEMO_SUPABASE_URL": "https://zdqodrkekwkfuqrlfxmq.supabase.co"
+      },
+      "permitted": false,
+      "_note": "Paired with an allowlisted target ON PURPOSE. Without it the run would be refused for 'nothing configured' even if the demo variable were never read, so the vector would pass vacuously. With it, the refusal can only come from reading the demo variable."
+    },
+    {
+      "name": "N1-D2 demo URL variable carrying the retired Learning cold archive",
+      "env": {
+        "STAGING_A_PROJECT_ID": "stagingaaaaaaaaaaaaa",
+        "VITE_QUARTUM_DEMO_SUPABASE_URL": "https://sfuxmkxqwuvfbwcfdxrl.supabase.co"
+      },
+      "permitted": false,
+      "_note": "Paired with an allowlisted target ON PURPOSE. Without it the run would be refused for 'nothing configured' even if the demo variable were never read, so the vector would pass vacuously. With it, the refusal can only come from reading the demo variable."
+    },
+    {
+      "name": "N1-D2 demo URL variable carrying the retired Lovable Cloud project",
+      "env": {
+        "STAGING_A_PROJECT_ID": "stagingaaaaaaaaaaaaa",
+        "VITE_QUARTUM_DEMO_SUPABASE_URL": "https://ojrqbrwlldtgyaxxxils.supabase.co"
+      },
+      "permitted": false,
+      "_note": "Paired with an allowlisted target ON PURPOSE. Without it the run would be refused for 'nothing configured' even if the demo variable were never read, so the vector would pass vacuously. With it, the refusal can only come from reading the demo variable."
+    },
+    {
+      "name": "N1-D2 an opaque demo publishable key contributes no ref and does not poison a clean target",
+      "_note": "An `sb_publishable_` key carries no claims. It must not be read as a project ref -- not even a wrong one. Paired with an allowlisted target the verdict is PERMIT, which is only reachable if the opaque key contributed nothing. Its companion vector sends a JWT-shaped demo key carrying a production ref through the same variable and is REFUSED, so the pair proves the guard reads claims where they exist and invents none where they do not.",
+      "env": {
+        "STAGING_A_PROJECT_ID": "stagingaaaaaaaaaaaaa",
+        "VITE_QUARTUM_DEMO_SUPABASE_PUBLISHABLE_KEY": "sb_publishable_000111222333"
+      },
+      "permitted": true
+    },
+    {
+      "name": "N1-D2 allowlisted demo target is permitted",
+      "env": {
+        "VITE_QUARTUM_DEMO_SUPABASE_PROJECT_ID": "stagingaaaaaaaaaaaaa",
+        "VITE_QUARTUM_DEMO_SUPABASE_URL": "https://stagingaaaaaaaaaaaaa.supabase.co"
+      },
+      "permitted": true
+    },
+    {
+      "name": "N1-D2 production ref inside a JWT-shaped demo publishable key",
+      "env": {
+        "STAGING_A_PROJECT_ID": "stagingaaaaaaaaaaaaa",
+        "VITE_QUARTUM_DEMO_SUPABASE_PUBLISHABLE_KEY": "@@JWT:zdqodrkekwkfuqrlfxmq@@"
+      },
+      "permitted": false,
+      "_note": "Paired with an allowlisted target ON PURPOSE. Without it the run would be refused for 'nothing configured' even if the demo variable were never read, so the vector would pass vacuously. With it, the refusal can only come from reading the demo variable."
+    }
   ]
 }

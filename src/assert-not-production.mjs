@@ -41,15 +41,16 @@ function hydrate(env) {
 
 export function runVectors() {
   const spec = JSON.parse(readFileSync(join(HERE, "..", "vectors", "target-verdicts.json"), "utf8"));
-  const results = spec.cases.map((c) => {
+  const declared = Array.isArray(spec.cases) ? spec.cases.length : 0;
+  const results = (spec.cases ?? []).map((c) => {
     const got = evaluateTarget(hydrate(c.env), spec.stagingAllowlist).permitted;
     return { name: c.name, want: c.permitted, got, ok: got === c.permitted };
   });
-  return { results, allowlist: spec.stagingAllowlist };
+  return { results, declared, allowlist: spec.stagingAllowlist };
 }
 
 function selfTest() {
-  const { results } = runVectors();
+  const { results, declared } = runVectors();
   console.log("\nPRODUCTION-TARGET INTERLOCK — published vectors\n" + "=".repeat(78));
   for (const r of results) {
     console.log(
@@ -60,6 +61,19 @@ function selfTest() {
   const bad = results.filter((r) => !r.ok).length;
   console.log("=".repeat(78));
   console.log(`${results.length - bad}/${results.length} target-verdict vectors passed`);
+
+  // A set that could not run is a FAILED proof, never a silent pass. Before
+  // this, an emptied or truncated vectors file printed "0/0 passed" and exited
+  // 0 -- the published authority could have been deleted and every consumer
+  // would still have reported conformance to it.
+  if (declared === 0) {
+    console.error("\nFAIL — the published vector set is EMPTY. There is nothing to conform to.");
+    process.exit(1);
+  }
+  if (results.length !== declared) {
+    console.error(`\nFAIL — ${declared} vector(s) declared but ${results.length} executed.`);
+    process.exit(1);
+  }
   process.exit(bad ? 1 : 0);
 }
 
