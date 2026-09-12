@@ -1,0 +1,60 @@
+# This repository publishes the vectors every other Quartum repository is judged
+# against. Until now nothing judged THEM.
+#
+# `quartum-platform` consumes `vectors/target-verdicts.json` at a pinned SHA and
+# proves its own interlock conforms. That is a strong property in one direction
+# and no property at all in the other: if the published set and the reference
+# implementation here ever disagreed, the disagreement would surface as a red
+# check in a consumer, attributed to the consumer. This job makes the authority
+# prove itself, in the repository that owns it.
+#
+# DELIBERATELY SMALL. No build, no dependencies, no matrix. Two commands that
+# already exist and are already the contract `action.yml` ships.
+#
+# NOT RUN HERE: `secret-scan.mjs <root>`. The scanner is meant to run against a
+# CONSUMING repository. Pointed at this one it exits 1 by design, because
+# `__fixtures__/positive-control.txt` holds fabricated credential material that
+# exists precisely so the scanner can be observed firing. Running it here would
+# be a permanently red job that proves nothing.
+name: Guard Conformance
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+# No `paths:` filter and no job-level `if:`. A required check that a filter
+# skipped is never reported at all, which leaves a pull request waiting forever
+# with nothing red to explain why.
+
+jobs:
+  guard-conformance:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Exact patch from the tracked authority, not a major. A floating version
+      # is a toolchain that changes without a commit, while judging guards whose
+      # entire purpose is that nothing changes silently.
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+
+      # No install step: every module here imports only `node:` builtins. There
+      # is no package.json and no lockfile, so there is nothing to resolve and
+      # nothing that could resolve differently.
+
+      # THE AUTHORITATIVE CHECK. Reads vectors/target-verdicts.json, runs each
+      # case through evaluateTarget from src/project-refs.mjs, and requires the
+      # verdict to match. It also refuses an EMPTY set and any run where
+      # executed != declared -- a set that could not run is a failed proof, not
+      # a silent pass.
+      - name: The published vectors and this implementation agree
+        run: node src/assert-not-production.mjs --self-test
+
+      # The scanner's own positive control: fabricated credential material it
+      # must find. A scanner that has never been observed finding anything is
+      # not known to be a scanner.
+      - name: The credential scanner can actually fire
+        run: node src/secret-scan.mjs --self-test
