@@ -17,6 +17,20 @@ export const PRODUCTION_REFS = Object.freeze({
   zdqodrkekwkfuqrlfxmq: "Project B-new — Learning clinical data (patients, results)",
 });
 
+/**
+ * The isolated Learning demo project (N1-D3). Synthetic data only, never clinical.
+ *
+ * DESCRIPTIVE, NOT A DECISION INPUT. `evaluateTarget` does not consult this map,
+ * and adding a ref here permits nothing. Permission is deliberately supplied per
+ * invocation through `QUARTUM_STAGING_ALLOW`, because a credentialled Studio job
+ * and a demo job must not share one standing permit set. Refusal is global and
+ * lives in source; permission is scoped to the run that claims it. Naming the
+ * project here only lets a message say WHICH demo it found.
+ */
+export const DEMO_REFS = Object.freeze({
+  kcqdfglrauexewjkptzz: "Learning isolated demo / synthetic-only (eu-west-1, Quartum Demo org)",
+});
+
 /** Retired projects. Pointing a test at a cold archive is a bug too. */
 export const RETIRED_REFS = Object.freeze({
   sfuxmkxqwuvfbwcfdxrl: "retired Learning project (cold archive)",
