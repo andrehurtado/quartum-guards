@@ -20,6 +20,12 @@ export const PRODUCTION_REFS = Object.freeze({
 /**
  * The isolated Learning demo project (N1-D3). Synthetic data only, never clinical.
  *
+ * The ref moved once, and the reason is worth keeping: the first two projects were
+ * abandoned as diagnostic evidence after a from-zero replay failed on them -- first
+ * on an unqualified pgcrypto call, then on a migration that de-elevated the
+ * migration runner. This is the project the repaired history replayed onto cleanly,
+ * 87 of 87, with zero clinical rows.
+ *
  * DESCRIPTIVE, NOT A DECISION INPUT. `evaluateTarget` does not consult this map,
  * and adding a ref here permits nothing. Permission is deliberately supplied per
  * invocation through `QUARTUM_STAGING_ALLOW`, because a credentialled Studio job
@@ -28,7 +34,7 @@ export const PRODUCTION_REFS = Object.freeze({
  * project here only lets a message say WHICH demo it found.
  */
 export const DEMO_REFS = Object.freeze({
-  kcqdfglrauexewjkptzz: "Learning isolated demo / synthetic-only (eu-west-1, Quartum Demo org)",
+  ovtjqkbvyhsfqzexhuup: "Learning isolated demo / synthetic-only (eu-west-1, Quartum Demo org)",
 });
 
 /** Retired projects. Pointing a test at a cold archive is a bug too. */
