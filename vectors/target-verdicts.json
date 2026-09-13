@@ -8,11 +8,17 @@
     "",
     "Every credential below is FABRICATED. The JWTs are unsigned, carry only a `ref`",
     "claim, and authenticate nothing. No real key, token or environment file may ever",
-    "enter this repository."
+    "enter this repository.",
+    "",
+    "N1-D3: kcqdfglrauexewjkptzz is the REAL isolated Learning demo project. A project",
+    "ref is public (see README) -- only credentials are fabricated, and every JWT here",
+    "still is. It appears on the allowlist so these vectors prove the actual demo target",
+    "is permitted while production and every retired project stay refused."
   ],
   "stagingAllowlist": [
     "stagingaaaaaaaaaaaaa",
-    "stagingbbbbbbbbbbbbb"
+    "stagingbbbbbbbbbbbbb",
+    "kcqdfglrauexewjkptzz"
   ],
   "cases": [
     {
@@ -145,6 +151,62 @@
       },
       "permitted": false,
       "_note": "Paired with an allowlisted target ON PURPOSE. Without it the run would be refused for 'nothing configured' even if the demo variable were never read, so the vector would pass vacuously. With it, the refusal can only come from reading the demo variable."
+    },
+    {
+      "name": "N1-D3 the real demo ref is permitted via the server demo project-id variable",
+      "_note": "Sole target on purpose: no other allowlisted ref is present, so this can only pass by permitting the demo ref itself.",
+      "env": {
+        "QUARTUM_DEMO_SUPABASE_PROJECT_ID": "kcqdfglrauexewjkptzz"
+      },
+      "permitted": true
+    },
+    {
+      "name": "N1-D3 the real demo ref is permitted via the browser demo project-id variable",
+      "env": {
+        "VITE_QUARTUM_DEMO_SUPABASE_PROJECT_ID": "kcqdfglrauexewjkptzz"
+      },
+      "permitted": true
+    },
+    {
+      "name": "N1-D3 the real demo ref is permitted via the demo URL variable",
+      "env": {
+        "VITE_QUARTUM_DEMO_SUPABASE_URL": "https://kcqdfglrauexewjkptzz.supabase.co"
+      },
+      "permitted": true
+    },
+    {
+      "name": "N1-D3 a JWT-shaped demo publishable key carrying the demo ref is permitted",
+      "env": {
+        "VITE_QUARTUM_DEMO_SUPABASE_PUBLISHABLE_KEY": "@@JWT:kcqdfglrauexewjkptzz@@"
+      },
+      "permitted": true
+    },
+    {
+      "name": "N1-D3 the full demo triple agrees and is permitted",
+      "env": {
+        "QUARTUM_DEMO_SUPABASE_PROJECT_ID": "kcqdfglrauexewjkptzz",
+        "VITE_QUARTUM_DEMO_SUPABASE_PROJECT_ID": "kcqdfglrauexewjkptzz",
+        "VITE_QUARTUM_DEMO_SUPABASE_URL": "https://kcqdfglrauexewjkptzz.supabase.co",
+        "VITE_QUARTUM_DEMO_SUPABASE_PUBLISHABLE_KEY": "@@JWT:kcqdfglrauexewjkptzz@@"
+      },
+      "permitted": true
+    },
+    {
+      "name": "N1-D3 Project A is refused as a Learning demo backend",
+      "_note": "Paired with the allowlisted demo ref so the refusal cannot come from 'nothing configured'.",
+      "env": {
+        "QUARTUM_DEMO_SUPABASE_PROJECT_ID": "kcqdfglrauexewjkptzz",
+        "VITE_QUARTUM_DEMO_SUPABASE_URL": "https://mnvviyiqawwtnwewzmwf.supabase.co"
+      },
+      "permitted": false
+    },
+    {
+      "name": "N1-D3 an unknown ref is still refused even beside the permitted demo ref",
+      "env": {
+        "QUARTUM_DEMO_SUPABASE_PROJECT_ID": "kcqdfglrauexewjkptzz",
+        "VITE_QUARTUM_DEMO_SUPABASE_PROJECT_ID": "unknownbbbbbbbbbbbb"
+      },
+      "permitted": false
     }
   ]
 }
